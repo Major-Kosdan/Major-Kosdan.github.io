@@ -1,3 +1,8 @@
+
+
+
+
+
 const navLinks = document.querySelectorAll('header nav a');
 const logoLink = document.querySelector('.logo');
 const sections = document.querySelectorAll('section');
@@ -102,12 +107,12 @@ const activePortfolio = () => {
 }
 
 arrowRight.addEventListener('click', () => {
-    if (index < 5) {
+    if (index < 8) {
         index++;
         arrow_left.classList.remove('disabled');
     }
     else{
-        index = 6;
+        index = 9;
         arrowRight.classList.add('disabled');
     }
 
@@ -129,17 +134,4 @@ arrow_left.addEventListener('click', () => {
 });
 
 
-document.getElementById("contactForm").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent default form submission
-
-    // Display the success message
-    document.getElementById("successMessage").style.display = "block";
-
-    // Clear the form after submission
-    document.getElementById("contactForm").reset();
-
-    // Optional: Hide the message after a few seconds
-    setTimeout(function () {
-        document.getElementById("successMessage").style.display = "none";
-    }, 7000);
-});
+ 
