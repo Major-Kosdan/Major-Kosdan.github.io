@@ -1,8 +1,4 @@
 
-
-
-
-
 const navLinks = document.querySelectorAll('header nav a');
 const logoLink = document.querySelector('.logo');
 const sections = document.querySelectorAll('section');
@@ -107,12 +103,12 @@ const activePortfolio = () => {
 }
 
 arrowRight.addEventListener('click', () => {
-    if (index < 8) {
+    if (index < 2) {
         index++;
         arrow_left.classList.remove('disabled');
     }
     else{
-        index = 9;
+        index = 3;
         arrowRight.classList.add('disabled');
     }
 

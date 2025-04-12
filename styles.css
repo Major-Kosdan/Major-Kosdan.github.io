@@ -199,6 +199,7 @@ section.active{
 .home_details p{
     font-size: 1.6rem;
     margin: 1rem 0 2.5rem;
+    text-align: justify;
 }
 
 
