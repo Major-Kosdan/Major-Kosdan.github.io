@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOSDAN | Web Developer</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #00ffcc;
+            --bg: #050505;
+            --card: #0d0d0d;
+            --text: #ffffff;
+            --text-dim: #888888;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            background: var(--bg); color: var(--text); 
+            font-family: 'Space Grotesk', sans-serif; 
+            overflow-x: hidden; line-height: 1.6;
+        }
+
+        /* Subtle Animated Background Mesh */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0);
+            background-size: 40px 40px; z-index: -1;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; left: 0; top: 0; height: 100vh; width: 80px;
+            background: rgba(0,0,0,0.95); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 35px; z-index: 1000; backdrop-filter: blur(15px);
+        }
+        nav a { color: var(--text-dim); transition: 0.3s; text-decoration: none; }
+        nav a:hover { color: var(--primary); transform: scale(1.2); }
+
+        /* --- HERO SECTION (FIXED ALIGNMENT) --- */
+        .hero { 
+            min-height: 100vh; 
+            padding: 0 10% 0 calc(80px + 10%); /* Space for nav + margin */
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; /* Pushes content to opposite ends */
+            gap: 60px; /* Ensures minimum distance on mid-size screens */
+        }
+        .hero-content { flex: 1; max-width: 650px; }
+        .hero h1 { 
+            font-family: 'Syncopate', sans-serif; font-size: clamp(2.5rem, 6vw, 5.5rem); 
+            line-height: 0.95; text-transform: uppercase; margin: 25px 0;
+            letter-spacing: -3px;
+        }
+        .hero-img-box {
+            flex-shrink: 0; /* Prevents image from getting squashed */
+            position: relative; width: 30vw; max-width: 420px; aspect-ratio: 4/5;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 70px; overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .hero-img-box:hover { border-color: var(--primary); transform: translateY(-10px) rotate(2deg); }
+        .hero-img-box img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); }
+
+        /* --- SECTION GENERIC --- */
+        section { padding: 100px 10% 100px calc(80px + 10%); max-width: 1600px; }
+        .section-title { font-family: 'Syncopate'; font-size: clamp(1.2rem, 3vw, 2rem); margin-bottom: 50px; color: var(--primary); }
+        
+        /* --- BENTO --- */
+        .bento-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; }
+        .bento-card { background: var(--card); border: 1px solid var(--border); padding: 40px; border-radius: 28px; }
+
+        /* --- EDUCATION --- */
+        .edu-item { border-left: 1px solid var(--primary); padding: 0 0 40px 30px; position: relative; }
+        .edu-item::before { content: ''; position: absolute; left: -5px; top: 0; width: 9px; height: 9px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); }
+
+        /* --- PROJECTS --- */
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+        .p-card { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 24px; 
+            padding: 24px; transition: 0.4s;
+        }
+        .p-card:hover { border-color: var(--primary); background: #111; }
+        .p-img { width: 100%; aspect-ratio: 16/10; border-radius: 16px; margin-bottom: 20px; background: #1a1a1a; object-fit: cover; opacity: 0.7; }
+
+        /* --- FOOTER --- */
+        footer { 
+            margin-left: 80px; padding: 80px 10%; border-top: 1px solid var(--border); 
+            background: #030303; display: flex; justify-content: space-between; align-items: flex-start;
+            flex-wrap: wrap; gap: 40px;
+        }
+        .status-tag { font-family: 'JetBrains Mono'; font-size: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* --- MOBILE ADAPTATION --- */
+        @media (max-width: 1024px) {
+            .hero { flex-direction: column-reverse; text-align: center; justify-content: center; padding: 120px 5% 50px 100px; }
+            .hero-img-box { width: 50vw; margin-bottom: 40px; }
+        }
+
+        @media (max-width: 850px) {
+            nav { width: 100%; height: 70px; top: auto; bottom: 0; flex-direction: row; border-right: none; border-top: 1px solid var(--border); }
+            section, .hero, footer { padding-left: 5%; padding-right: 5%; margin-left: 0; }
+            .hero { padding-top: 80px; }
+            .hero-img-box { width: 80vw; }
+            .bento-grid { grid-template-columns: 1fr; }
+            footer { padding-bottom: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+        <nav>
+        <a href="#home"><i data-lucide="home"></i></a>
+        <a href="#about"><i data-lucide="user"></i></a>
+        <a href="#education"><i data-lucide="book-open"></i></a>
+        <a href="#experience"><i data-lucide="briefcase"></i></a> 
+        <a href="#projects"><i data-lucide="code"></i></a>
+        <a href="#contact"><i data-lucide="mail"></i></a>
+     </nav>
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <p style="font-family:'JetBrains Mono'; color:var(--primary); letter-spacing: 2px;">// WEB.DEVELOPER</p>
+            <h1>KOSI<br>NNACHI_</h1>
+            <p style="color:var(--text-dim); font-size: 1.25rem; max-width: 520px; font-weight: 300;">
+                Building clean, functional, and user-focused web experiences.
+            </p>
+                <div class="hero-btns">
+            <a href="#projects" class="btn-primary">VIEW_PROJECTS</a>
+            <a href="https://drive.google.com/file/d/1YctjZrjy5AHFn1aM0rgtXnXlYva7luFC/view?usp=sharing" target="_blank" class="btn-outline">DOWNLOAD_CV</a>
+        </div>
+        <style>
+            
+.hero-btns {
+    margin-top: 50px; 
+    display: flex; 
+    gap: 20px; 
+    flex-wrap: wrap;
+}
+
+.btn-primary, .btn-outline {
+    padding: 18px 40px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 800;
+    font-family: 'Syncopate';
+    font-size: 0.8rem;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #000;
+}
+
+.btn-outline {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .hero-btns {
+        justify-content: center; 
+    }
+    
+    .btn-primary, .btn-outline {
+        width: 100%; 
+        max-width: 300px;
+    }
+}
+     </style>
+        </div>
+        <div class="hero-img-box">
+            <img src="mydp.png" alt="Kosisochukwu Nnachi">
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">01_ABOUT_ME</h2>
+        <div class="bento-grid">
+            <div class="bento-card">
+                <h3 style="margin-bottom:20px; font-family: 'Syncopate'; font-size: 0.9rem;">CORE_MISSION</h3>
+                <p style="color:var(--text-dim); font-size: 1.1rem;">
+                   I’m a Computer Science graduate who enjoys building clean, interactive web applications. I like breaking things down, understanding how they work, and improving through hands-on projects.
+                 </p>
+            </div>
+            <div class="bento-card">
+                <h3 style="margin-bottom:20px; font-family: 'Syncopate'; font-size: 0.9rem;">SOCIAL_UPLINK</h3>
+                <div style="display:grid; grid-template-columns: 1fr; gap:12px;">
+                    <a href="https://www.linkedin.com/in/kosisochukwu-nnachi-819b3b331/" style="color:var(--text-dim); text-decoration:none; border-bottom: 1px solid var(--border); padding-bottom: 8px; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-dim)'">LINKEDIN</a>
+                    <a href="https://github.com/Major-Kosdan" style="color:var(--text-dim); text-decoration:none; border-bottom: 1px solid var(--border); padding-bottom: 8px; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-dim)'">GITHUB</a>
+                    <a href="https://x.com/MajorKosdan" style="color:var(--text-dim); text-decoration:none; border-bottom: 1px solid var(--border); padding-bottom: 8px; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-dim)'">X_TWITTER</a>
+                    <a href="https://discord.com/users/1125654303298818160" style="color:var(--text-dim); text-decoration:none; border-bottom: 1px solid var(--border); padding-bottom: 8px; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-dim)'">DISCORD</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="education">
+        <h2 class="section-title">02_EDUCATION</h2>
+        <div class="edu-item">
+            <h4 style="color:var(--primary); font-family:'JetBrains Mono'; margin-bottom: 5px;">2021 — 2025</h4>
+            <h3 style="font-family:'Syncopate'; font-size: 1.1rem;">B.Sc. Computer Science</h3>
+            <p style="color:var(--text-dim);">University of Nigeria, Nsukka (UNN)</p>
+        </div>
+         <div class="edu-item">
+            <h4 style="color:var(--primary); font-family:'JetBrains Mono'; margin-bottom: 5px;">2022 - 2023</h4>
+            <h3 style="font-family:'Syncopate'; font-size: 1.1rem;">Web Development (Online)</h3>
+            <p style="color:var(--text-dim);">Heroic Universal Institue</p>
+        </div>
+        <div class="edu-item">
+            <h4 style="color:var(--primary); font-family:'JetBrains Mono'; margin-bottom: 5px;">2024 - 2025</h4>
+            <h3 style="font-family:'Syncopate'; font-size: 1.1rem;">Intern, Computer Networking & Web Development</h3>
+            <p style="color:var(--text-dim);">Adetokunbo Babatunde Sofoluwe Centre for Information Technology and Systems (ABS-CITS), University of Lagos</p>
+        </div>
+       
+    </section>
+
+    <section id="skills" style="padding-bottom: 50px;">
+        <h2 class="section-title">03_MY SKILLS</h2>
+        <div class="bento-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+            
+            <div class="bento-card" style="padding: 25px;">
+                <h3 style="font-family:'JetBrains Mono'; color:var(--primary); font-size:0.9rem; margin-bottom:15px;">// FRONTEND_CORE</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <span class="stack-item">HTML5</span>
+                    <span class="stack-item">CSS3</span>
+                    <span class="stack-item">JavaScript</span>
+                    <span class="stack-item">React</span>
+                </div>
+            </div>
+
+            <div class="bento-card" style="padding: 25px;">
+                <h3 style="font-family:'JetBrains Mono'; color:var(--primary); font-size:0.9rem; margin-bottom:15px;">// BACKEND_SYSTEMS</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <span class="stack-item">PHP</span>
+                    <span class="stack-item">MySQL</span>
+                    <span class="stack-item">WordPress</span>
+                </div>
+            </div>
+
+            <div class="bento-card" style="padding: 25px;">
+                <h3 style="font-family:'JetBrains Mono'; color:var(--primary); font-size:0.9rem; margin-bottom:15px;">// VERSION_CONTROL</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <span class="stack-item">Git</span>
+                    <span class="stack-item">GitHub</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="experience">
+    <div class="container">
+        <h2 class="section-title">04_EXPERIENCE</h2>
+        
+        <div class="exp-grid">
+            <div class="exp-card">
+                <div class="exp-header">
+                    <span class="exp-number">01</span>
+                    <h4 class="exp-date">2024 — PRESENT</h4>
+                </div>
+                <h3 class="exp-role">WEB ADMINISTRATOR & DEVELOPER</h3>
+                <p class="exp-company">Revival Fire America</p>
+                <ul class="exp-list">
+                    <li>End-to-end development and server management.</li>
+                    <li>Security updates ensuring 100% website uptime.</li>
+                    <li>Content architecture and brand consistency.</li>
+                </ul>
+            </div>
+
+            <div class="exp-card">
+                <div class="exp-header">
+                    <span class="exp-number">02</span>
+                    <h4 class="exp-date">2025 — PRESENT</h4>
+                </div>
+                <h3 class="exp-role">WEB MANAGER & PERFORMANCE DEV</h3>
+                <p class="exp-company">My Resilience Life</p>
+                <ul class="exp-list">
+                    <li>Technical management of wellness platforms.</li>
+                    <li>Landing page optimization for registrations.</li>
+                    <li>Digital asset and training system maintenance.</li>
+                </ul>
+            </div>
+
+            <div class="exp-card">
+                <div class="exp-header">
+                    <span class="exp-number">03</span>
+                    <h4 class="exp-date">2024 — 2025</h4>
+                </div>
+                <h3 class="exp-role">WEB DEVELOPMENT INTERN</h3>
+                <p class="exp-company">ABS-CITS, University of Lagos</p>
+                <ul class="exp-list">
+                    <li>UI/UX translation into functional frontend.</li>
+                    <li>Backend integration for registration systems.</li>
+                    <li>Cross-browser performance optimization.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+    
+
+    <section id="projects">
+        <h2 class="section-title">05_PROJECTS</h2>
+        <div class="project-grid" id="pGrid"></div>
+    </section>
+
+ <section id="contact">
+    <h2 class="section-title">06_CONTACT_ME</h2>
+    <form action="https://formspree.io/f/mnjqkkww" method="POST" style="max-width: 700px; background: var(--card); padding: 50px; border-radius: 30px; border: 1px solid var(--border);">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <input type="text" name="name" placeholder="NAME" required style="width:100%; padding:18px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:#fff; margin-bottom:20px;">
+            <input type="email" name="_replyto" placeholder="EMAIL" required style="width:100%; padding:18px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:#fff; margin-bottom:20px;">
+            <input type="tel" name="phone" placeholder="PHONE_NUMBER" style="width:100%; padding:18px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:#fff; margin-bottom:20px;">
+            <input type="text" name="_subject" placeholder="SUBJECT" style="width:100%; padding:18px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:#fff; margin-bottom:20px;">
+        </div>
+        <textarea name="message" placeholder="YOUR_MESSAGE" rows="6" required style="width:100%; padding:18px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:#fff; margin-bottom:25px;"></textarea>
+        <button type="submit" style="width:100%; background:var(--primary); border:none; padding:20px; font-weight:800; font-family:'Syncopate'; cursor:pointer; color:#000; letter-spacing: 2px;">SEND_MESSAGE</button>
+    </form>
+</section>
+
+    <footer class="main-footer">
+     <div class="footer-status">
+        <div class="status-tag"><div class="status-dot"></div> STATUS: ACTIVE</div>
+        <div class="status-tag"><i data-lucide="shield-check" size="14"></i> SECURE_CONNECTION</div>
+        <div class="status-tag"><i data-lucide="map-pin" size="14"></i> LAGOS_NG // REMOTE</div>
+    </div>
+
+    <div class="footer-info">
+        <h2 style="font-family:'Syncopate'; font-size: 1.5rem;">KOSDAN<span style="color:var(--primary);">_</span></h2>
+        <p class="footer-text">
+            Open to learning, collaboration, and opportunities.
+        </p>
+        <p class="copyright">&copy; 2025 ALL RIGHTS RESERVED.</p>
+    </div>
+    
+</footer>
+<style>
+    footer {
+    padding: 60px 5%;
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+}
+
+.footer-info {
+    max-width: 400px;
+}
+
+.footer-text {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-top: 15px;
+    font-weight: 300;
+}
+
+.copyright {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    margin-top: 30px;
+}
+
+.footer-status {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#experience {
+    padding: 100px 0;
+    background: var(--bg);
+}
+
+.container {
+    max-width: 1100px; /* Limits width so it doesn't touch screen edges */
+    margin: 0 auto;
+    padding: 0 25px; /* Adds safety space on mobile */
+}
+
+.section-title {
+    font-family: 'Syncopate';
+    color: var(--text);
+    font-size: clamp(1.2rem, 5vw, 1.8rem); /* Responsive size */
+    margin-bottom: 50px;
+    letter-spacing: 3px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+    display: inline-block;
+}
+
+.exp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.exp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 30px;
+    position: relative;
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+.exp-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+}
+
+.exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.exp-number {
+    font-family: 'JetBrains Mono';
+    color: var(--primary);
+    opacity: 0.3;
+    font-size: 0.9rem;
+}
+
+.exp-date {
+    font-family: 'JetBrains Mono';
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.exp-role {
+    font-family: 'Syncopate';
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.exp-company {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.exp-list {
+    list-style: none;
+    padding: 0;
+}
+
+.exp-list li {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    padding-left: 15px;
+    border-left: 1px solid var(--primary);
+}
+
+/* THE MOBILE NEAT STACK */
+@media (max-width: 768px) {
+    footer {
+        flex-direction: column; 
+        align-items: center;    
+        text-align: center;     
+        gap: 40px;
+        margin-bottom: 30px;            
+    }
+
+    .footer-status {
+        align-items: center;
+            
+    }
+}
+</style>
+    <script>
+    lucide.createIcons();
+
+    // 1. UPDATED DATA ARRAY FOR ALL 10 PROJECTS
+    const projects = [
+    { 
+        title: "CORE CONCEPTS ACADEMY ONLINE WEBSITE", 
+        tech: "JAVASCRIPT", 
+        image: "assets/academy.png", 
+        desc: "A specialized e-learning platform providing expert online tutoring in Physics, Chemistry, and Mathematics. Designed to simplify complex concepts and strengthen problem-solving skills for secondary and university students, helping them achieve academic excellence from home.",
+        github: "https://github.com/Major-Kosdan/core-concepts-academy", 
+        live: "https://major-kosdan.github.io/core-concepts-academy/" 
+    },
+    { 
+        title: "CAMPUS MARKETPLACE FOR UNN COMMUNITY", 
+        tech: "PHP/MYSQL", 
+        image: "assets/marketplace.png", 
+        desc: "A custom e-commerce solution built exclusively for UNN students. This platform allows members of the Lion community to discover deals, sell items effortlessly, and connect with trusted buyers and sellers through a secure, campus-focused marketplace.",
+        github: "https://github.com/Major-Kosdan/UNNify-Marketplace", 
+        live: "https://unnify.wuaze.com/" 
+    },
+    { 
+        title: "REVIVAL FIRE AMERICA", 
+        tech: "WORDPRESS", 
+        image: "assets/revival.png", 
+        desc: "A digital hub for a nationwide spiritual movement dedicated to awakening hearts and transforming lives. The site features a mission-driven design focused on community unity, fervent prayer, and passionate worship to foster revival across America.",
+        github: "#", 
+        live: "https://revivalfireamerica.com/" 
+    },
+    { 
+        title: "MY RESILIENCE", 
+        tech: "WORDPRESS", 
+        image: "assets/resilience.png", 
+        desc: "A high-performance wellness platform designed for high achievers. It offers science-backed nutrition strategies to eliminate burnout, boost productivity by 40%, and reclaim mental clarity through targeted lifestyle hacks and exclusive training webinars.",
+        github: "#", 
+        live: "https://myresiliencelife.com/" 
+    },
+    { 
+        title: "PORTFOLIO WEBSITE", 
+        tech: "JAVASCRIPT", 
+        image: "assets/portfolio.png", 
+        desc: "My very first personal project where I mastered the core fundamentals of web development. This site focuses on clean HTML structure and custom CSS styling to create a responsive layout, marking the beginning of my journey into professional coding.",
+        github: "https://github.com/Major-Kosdan/Major-Kosdan.github.io", 
+        live: "https://major-kosdan.github.io/#" 
+    },
+    { 
+        title: "BASIC E-COMMERCE WEBSITE", 
+        tech: "HTML/CSS", 
+        image: "assets/eco.png", 
+        desc: "A digital marketplace for ICT training and development courses. The platform features a product catalog for web development tutorials, including 'Add to Cart' functionality and pricing displays for various professional tech courses ranging from Ajax to Full-Stack development.",
+        github: "https://github.com/Major-Kosdan/E-commerce-website", 
+        live: "https://major-kosdan.github.io/E-commerce-website/" 
+    },
+    { 
+        title: "STUDENTS' ATTENDANCE MANAGEMENT SYSTEM", 
+        tech: "PHP/MYSQL", 
+        image: "assets/nacoss.png", 
+        desc: "A digital solution for lecturers to track and manage student records. The system automates attendance logging for specific courses and dates, providing a secure dashboard to monitor participation and generate downloadable reports for academic assessment.",
+        live: "https://nacosunn-portal.rf.gd/" 
+    },
+    { 
+        title: "REAL ESTATE PLATFORM FOR ENUGU", 
+        tech: "PHP/MYSQL", 
+        image: "assets/realestate.png", 
+        desc: "A property management system built for the Enugu market. It allows users to browse local listings for apartments and land, featuring property filters and a direct messaging system to connect buyers with verified agents in the Enugu area.",
+        github: "https://github.com/Major-Kosdan/Real-estate-", 
+        live: "#" 
+    },
+    { 
+        title: "QUIZ APP", 
+        tech: "JAVASCRIPT", 
+        image: "assets/quiz.png", 
+        desc: "An interactive web application designed to test user knowledge. It features a dynamic progress bar, real-time score tracking, and multiple-choice questions, providing instant feedback and a final performance summary at the end of the session.",
+        github: "https://github.com/Major-Kosdan/QUIZ-GAME", 
+        live: "https://major-kosdan.github.io/QUIZ-GAME/" 
+    },
+    { 
+        title: "ABS-CITS, UNIVERSITY OF LAGOS", 
+        tech: "PHP/MYSQL", 
+        image: "assets/cits.png", 
+        desc: "A professional redesign for UNILAG's CITS department. I led the frontend development, transforming UI/UX designs into a functional interface. The platform supports student course exploration, digital applications, and an integrated registration system for academic purchases.",
+        github: "https://github.com/Major-Kosdan/cits-updated", 
+        live: "#" 
+    },
+    { 
+        title: "TEXT TO SPEECH CONVERTER", 
+        tech: "JAVASCRIPT", 
+        image: "assets/tts.png", 
+        desc: "A powerful web utility that converts text into audio using the Google Web Speech API. This project demonstrates advanced API integration, allowing users to choose from multiple international voices and customize the speaking rate and pitch for a high-quality experience.",
+        github: "https://github.com/Major-Kosdan/Kosvoice-Ai", 
+        live: "https://major-kosdan.github.io/Kosvoice-Ai/" 
+    },
+    { 
+        title: "COLOR PALETTE GENERATOR", 
+        tech: "JAVASCRIPT", 
+        image: "assets/palette.png", 
+        desc: "A creative utility for designers to generate and discover color schemes. Built with vanilla JavaScript, it features a one-click 'Copy to Clipboard' function for Hex codes and dynamic UI updates that provide instant visual confirmation for a seamless workflow.",
+        github: "https://github.com/Major-Kosdan/color-palette-generator", 
+        live: "https://major-kosdan.github.io/color-palette-generator/" 
+    }
+];
+
+// 2. UPDATED RENDER LOGIC
+const pGrid = document.getElementById('pGrid');
+pGrid.innerHTML = ''; 
+
+projects.forEach((p) => {
+    pGrid.innerHTML += `
+        <div class="p-card">
+            <div style="width: 100%; aspect-ratio: 16/10; overflow: hidden; border-radius: 16px; margin-bottom: 20px; background: #111; border: 1px solid var(--border);">
+                <img src="${p.image}" class="p-img" alt="${p.title}" 
+                     style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: block;"
+                     onerror="this.src='https://placehold.co/600x400/0a0a0a/666666?text=Image+Not+Found'">
+            </div>
+            <p style="font-family:'JetBrains Mono'; color:var(--primary); font-size:0.7rem;">${p.tech}</p>
+            <h3 style="font-family:'Syncopate'; font-size:0.95rem; margin:12px 0; color: #fff;">${p.title}</h3>
+            
+            <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px; font-weight: 300;">
+                ${p.desc}
+            </p>
+
+            <div style="display:flex; gap:15px;">
+                <a href="${p.github}" target="_blank" style="color:var(--text-dim); transition: 0.3s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='var(--text-dim)'">
+                    <i data-lucide="github" size="18"></i>
+                </a>
+                <a href="${p.live}" target="_blank" style="color:var(--text-dim); transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-dim)'">
+                    <i data-lucide="external-link" size="18"></i>
+                </a>
+            </div>
+        </div>
+    `;
+});
+
+    lucide.createIcons();
+
+    // 3. ANIMATIONS
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.utils.toArray("section").forEach(section => {
+        gsap.from(section, {
+            scrollTrigger: { trigger: section, start: "top 85%" },
+            opacity: 0, y: 40, duration: 0.8
+        });
+    });
+</script>
+</body>
+</html>
