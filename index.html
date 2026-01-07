@@ -20,7 +20,6 @@
             --border: rgba(255, 255, 255, 0.08);
         }
 
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { 
@@ -122,7 +121,7 @@
 </head>
 <body>
 
-        <nav>
+     <nav>
         <a href="#home"><i data-lucide="home"></i></a>
         <a href="#about"><i data-lucide="user"></i></a>
         <a href="#education"><i data-lucide="book-open"></i></a>
@@ -130,6 +129,7 @@
         <a href="#projects"><i data-lucide="code"></i></a>
         <a href="#contact"><i data-lucide="mail"></i></a>
      </nav>
+
     <section id="home" class="hero">
         <div class="hero-content">
             <p style="font-family:'JetBrains Mono'; color:var(--primary); letter-spacing: 2px;">// WEB.DEVELOPER</p>
@@ -194,8 +194,10 @@
             <div class="bento-card">
                 <h3 style="margin-bottom:20px; font-family: 'Syncopate'; font-size: 0.9rem;">CORE_MISSION</h3>
                 <p style="color:var(--text-dim); font-size: 1.1rem;">
-                   I’m a Computer Science graduate who enjoys building clean, interactive web applications. I like breaking things down, understanding how they work, and improving through hands-on projects.
-                 </p>
+                  I’m a Computer Science graduate who enjoys building clean, interactive web applications. 
+                I like breaking things down, understanding how they work, and improving through hands-on projects. 
+                Currently, I am deep-diving into React to build more dynamic, scalable interfaces. 
+                I am actively open to new opportunities and roles where I can contribute my skills and continue to grow.  </p>
             </div>
             <div class="bento-card">
                 <h3 style="margin-bottom:20px; font-family: 'Syncopate'; font-size: 0.9rem;">SOCIAL_UPLINK</h3>
@@ -319,7 +321,7 @@
         <div class="project-grid" id="pGrid"></div>
     </section>
 
- <section id="contact">
+   <section id="contact">
     <h2 class="section-title">06_CONTACT_ME</h2>
     <form action="https://formspree.io/f/mnjqkkww" method="POST" style="max-width: 700px; background: var(--card); padding: 50px; border-radius: 30px; border: 1px solid var(--border);">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -345,7 +347,7 @@
         <p class="footer-text">
             Open to learning, collaboration, and opportunities.
         </p>
-        <p class="copyright">&copy; 2025 ALL RIGHTS RESERVED.</p>
+        <p class="copyright">&copy; 2026 ALL RIGHTS RESERVED.</p>
     </div>
     
 </footer>
@@ -495,6 +497,7 @@
 
     // 1. UPDATED DATA ARRAY FOR ALL 10 PROJECTS
     const projects = [
+
     { 
         title: "CORE CONCEPTS ACADEMY ONLINE WEBSITE", 
         tech: "JAVASCRIPT", 
@@ -503,6 +506,7 @@
         github: "https://github.com/Major-Kosdan/core-concepts-academy", 
         live: "https://major-kosdan.github.io/core-concepts-academy/" 
     },
+
     { 
         title: "CAMPUS MARKETPLACE FOR UNN COMMUNITY", 
         tech: "PHP/MYSQL", 
@@ -511,6 +515,8 @@
         github: "https://github.com/Major-Kosdan/UNNify-Marketplace", 
         live: "https://unnify.wuaze.com/" 
     },
+    
+    
     { 
         title: "REVIVAL FIRE AMERICA", 
         tech: "WORDPRESS", 
@@ -635,4 +641,7 @@ projects.forEach((p) => {
     });
 </script>
 </body>
+
 </html>
+
+
